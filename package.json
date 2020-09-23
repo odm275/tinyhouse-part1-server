@@ -1,5 +1,5 @@
 {
-  "name": "tinyhouse-v1-server",
+  "name": "tinyhouse-server",
   "version": "0.1.0",
   "dependencies": {
     "apollo-server-express": "^2.17.0",
@@ -25,6 +25,7 @@
   },
   "scripts": {
     "start": "nodemon src/index.ts",
-    "build": "tsc -p ./"
+    "build": "tsc -p ./",
+    "seed": "ts-node temp/seed.ts"
   }
 }
