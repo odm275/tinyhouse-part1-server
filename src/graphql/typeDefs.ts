@@ -11,7 +11,6 @@ export const typeDefs = gql`
   type Query {
     authUrl: String!
   }
-
   input LogInInput {
     code: String!
   }

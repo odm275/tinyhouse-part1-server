@@ -1,28 +1,31 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config()
+require("dotenv").config();
 
-import express, { Application } from 'express'
-import { ApolloServer } from 'apollo-server-express'
-import { connectDatabase } from './database'
-import { typeDefs, resolvers } from './graphql'
+import express, { Application } from "express";
+import cookieParser from "cookie-parser";
+import { ApolloServer } from "apollo-server-express";
+import { connectDatabase } from "./database";
+import { typeDefs, resolvers } from "./graphql";
 
-const port = 9000
+const port = 9000;
 
 const mount = async (app: Application) => {
-  const db = await connectDatabase()
+  const db = await connectDatabase();
+
+  app.use(cookieParser(process.env.SECRET));
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: () => ({ db }),
-  })
-  server.applyMiddleware({ app, path: '/api' })
+    context: ({ req, res }) => ({ db, req, res }),
+  });
+  server.applyMiddleware({ app, path: "/api" });
 
-  app.listen(process.env.PORT)
+  app.listen(process.env.PORT);
 
-  console.log(`[app]: http://localhost:${port}`)
+  console.log(`[app]: http://localhost:${port}`);
 
-  const listings = await db.listings.find({}).toArray()
-  console.log(listings)
-}
+  const listings = await db.listings.find({}).toArray();
+  console.log(listings);
+};
 
-mount(express())
+mount(express());
