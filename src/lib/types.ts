@@ -59,6 +59,7 @@ export interface User {
   income: number;
   bookings: ObjectId[]; // One to Many: One User holds many references to bookings.
   listings: ObjectId[]; // One to Many: One User holds many references to listings.
+  authorized?: boolean;
 }
 
 export interface Database {
