@@ -32,6 +32,7 @@ export const typeDefs = gql`
     bookingsIndex: String!
     price: Int!
     numOfGuests: Int!
+    authorized?: boolean;
   }
 
   type Listings {
@@ -64,6 +65,7 @@ export const typeDefs = gql`
   type Query {
     authUrl: String!
     user(id: ID!): User!
+    listing(id: ID): Listing!
   }
 
   type Mutation {

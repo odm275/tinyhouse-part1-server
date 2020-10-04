@@ -57,7 +57,7 @@ export const userResolvers: IResolvers = {
           total: 0,
           result: [],
         };
-        // Find all ids in user.bookings -> returns array of bookings
+        // Find all ids in user.bookings(user being passed in as args) -> returns array of bookings
         let cursor = await db.bookings.find({
           _id: { $in: user.bookings },
         });
