@@ -32,7 +32,6 @@ export const typeDefs = gql`
     bookingsIndex: String!
     price: Int!
     numOfGuests: Int!
-    authorized?: boolean;
   }
 
   type Listings {

@@ -48,6 +48,7 @@ export interface Listing {
   bookingsIndex: BookingsIndex;
   price: number;
   numOfGuests: number;
+  authorized?: boolean;
 }
 export interface User {
   _id: string; // we are going use a 3rd party service to generate ids, we won't use ObjectId because these ids don't conform to the format mongodb expects.
