@@ -6,6 +6,8 @@ import { Booking, BookingsIndex, Database, Listing } from "../../../lib/types";
 import { authorize } from "../../../lib/utils";
 import { CreateBookingArgs } from "./types";
 
+const millisecondsPerDay = 86400000;
+
 const resolveBookingsIndex = (
   bookingsIndex: BookingsIndex,
   checkInDate: string,
@@ -63,9 +65,24 @@ export const bookingResolvers: IResolvers = {
         if (listing.host === viewer._id) {
           throw new Error("viewer can't book own listing");
         }
-
+        const today = new Date();
         const checkInDate = new Date(checkIn);
         const checkOutDate = new Date(checkOut);
+
+        if (checkInDate.getTime() > today.getTime() + 90 * millisecondsPerDay) {
+          throw new Error(
+            "check in date can't be more than 90 days from today"
+          );
+        }
+
+        if (
+          checkOutDate.getTime() >
+          today.getTime() + 90 * millisecondsPerDay
+        ) {
+          throw new Error(
+            "check out date can't be more than 90 days from today"
+          );
+        }
 
         if (checkOutDate < checkInDate) {
           throw new Error("check out date can't be before check in date");
