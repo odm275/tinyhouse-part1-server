@@ -2,10 +2,10 @@ import { Collection, ObjectId } from "mongodb";
 
 export interface Viewer {
   _id?: string;
-  token?: string;
+  token?: string; // helps protect against csrf(cross site request forgery) attacks
   avatar?: string;
-  walletId?: string; // Actual wallet id
-  didRequest: boolean;
+  walletId?: string; // boolean value to indicate if the viewer has connected to the payment processor in our app
+  didRequest: boolean; // a boolean value to indicate if a request has been made from the client to obtain viewer information.
 }
 
 export enum ListingType {
