@@ -120,7 +120,7 @@ export const viewerResolvers: IResolvers = {
     },
   },
   Mutation: {
-    // Fired in two cases: When User signs in with Google Oauth Url and User's cookie session.
+    // Fired in two cases(from front end): When User signs in with Google Oauth Url and User's cookie session.
     logIn: async (
       __root: undefined,
       { input }: LogInArgs,

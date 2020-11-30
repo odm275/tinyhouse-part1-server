@@ -90,6 +90,10 @@ export const typeDefs = gql`
     checkOut: String!
   }
 
+  input AutoCompleteInput {
+    text: String!
+  }
+
   type Query {
     authUrl: String!
     user(id: ID!): User!
@@ -100,6 +104,7 @@ export const typeDefs = gql`
       limit: Int!
       page: Int!
     ): Listings!
+    autoCompleteOptions(text: String!): Listings
   }
 
   type Mutation {

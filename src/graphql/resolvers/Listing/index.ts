@@ -14,6 +14,7 @@ import {
   ListingsQuery,
   HostListingInput,
   HostListingArgs,
+  AutoCompleteArgs,
 } from "./types";
 
 const verifyHostListingInput = ({
@@ -38,11 +39,48 @@ const verifyHostListingInput = ({
 
 export const listingResolvers: IResolvers = {
   Query: {
+    autoCompleteOptions: async (
+      _root: undefined,
+      { text }: AutoCompleteArgs,
+      { db }: { db: Database }
+    ): Promise<ListingsData> => {
+      try {
+        console.log("text", text);
+        const data: ListingsData = {
+          total: 0,
+          result: [],
+          region: null,
+        };
+        const result = await db.listings.aggregate([
+          {
+            $search: {
+              autocomplete: {
+                query: `${text}`,
+                path: "country",
+                fuzzy: {
+                  maxEdits: 2,
+                },
+              },
+            },
+          },
+        ]);
+        const listings = result.limit(5);
+        console.log("heyaaaaaaaaaaaaaaaa");
+
+        data.total = await listings.count();
+        data.result = await listings.toArray();
+        console.log("data", data);
+        return data;
+      } catch (error) {
+        throw new Error(`Failed to search(autocomplete) listings : ${error}`);
+      }
+    },
     listing: async (
       _root: undefined,
       { id }: ListingArgs,
       { db, req }: { db: Database; req: Request }
     ): Promise<Listing> => {
+      console.log("id", id);
       try {
         const listing = await db.listings.findOne({ _id: new ObjectId(id) });
         if (!listing) {
