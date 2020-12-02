@@ -45,7 +45,6 @@ export const listingResolvers: IResolvers = {
       { db }: { db: Database }
     ): Promise<ListingsData> => {
       try {
-        console.log("text", text);
         const data: ListingsData = {
           total: 0,
           result: [],
@@ -54,22 +53,34 @@ export const listingResolvers: IResolvers = {
         const result = await db.listings.aggregate([
           {
             $search: {
-              autocomplete: {
-                query: `${text}`,
-                path: "country",
-                fuzzy: {
-                  maxEdits: 2,
-                },
+              compound: {
+                should: [
+                  {
+                    autocomplete: {
+                      query: `${text}`,
+                      path: "address",
+                      fuzzy: {
+                        maxEdits: 2,
+                      },
+                    },
+                  },
+                  {
+                    autocomplete: {
+                      query: `${text}`,
+                      path: "city",
+                      fuzzy: {
+                        maxEdits: 2,
+                      },
+                    },
+                  },
+                ],
               },
             },
           },
         ]);
         const listings = result.limit(5);
-        console.log("heyaaaaaaaaaaaaaaaa");
-
-        data.total = await listings.count();
         data.result = await listings.toArray();
-        console.log("data", data);
+        data.total = data.result.length;
         return data;
       } catch (error) {
         throw new Error(`Failed to search(autocomplete) listings : ${error}`);

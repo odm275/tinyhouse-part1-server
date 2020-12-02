@@ -104,7 +104,7 @@ export const typeDefs = gql`
       limit: Int!
       page: Int!
     ): Listings!
-    autoCompleteOptions(text: String!): Listings
+    autoCompleteOptions(text: String!): Listings!
   }
 
   type Mutation {
