@@ -59,18 +59,12 @@ export const listingResolvers: IResolvers = {
                     autocomplete: {
                       query: `${text}`,
                       path: "address",
-                      fuzzy: {
-                        maxEdits: 2,
-                      },
                     },
                   },
                   {
                     autocomplete: {
                       query: `${text}`,
                       path: "city",
-                      fuzzy: {
-                        maxEdits: 2,
-                      },
                     },
                   },
                 ],
