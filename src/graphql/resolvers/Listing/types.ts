@@ -62,6 +62,7 @@ export interface CityAndAdmin {
 export interface CityAndAdminResults {
   result: CityAndAdmin[];
   total: number;
+  dummy: number | null;
 }
 
 export type AutoCompleteResult = ListingsData | CityAndAdminResults

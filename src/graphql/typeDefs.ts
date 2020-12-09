@@ -73,6 +73,7 @@ export const typeDefs = gql`
   type CityAndAdminResults {
     result: [CityAndAdmin!]!
     total: Int!
+    dummy: Int
   }
 
   input LogInInput {
