@@ -65,6 +65,16 @@ export const typeDefs = gql`
     didRequest: Boolean!
   }
 
+  type CityAndAdmin {
+    admin: String
+    city: String
+  }
+
+  type CityAndAdminResults {
+    result: [CityAndAdmin!]!
+    total: Int!
+  }
+
   input LogInInput {
     code: String!
   }
@@ -89,10 +99,8 @@ export const typeDefs = gql`
     checkIn: String!
     checkOut: String!
   }
-
-  input AutoCompleteInput {
-    text: String!
-  }
+  
+  union AutoCompleteResult = Listings | CityAndAdminResults
 
   type Query {
     authUrl: String!
@@ -104,7 +112,7 @@ export const typeDefs = gql`
       limit: Int!
       page: Int!
     ): Listings!
-    autoCompleteOptions(text: String!): Listings!
+    autoCompleteOptions(text: String!): AutoCompleteResult
   }
 
   type Mutation {

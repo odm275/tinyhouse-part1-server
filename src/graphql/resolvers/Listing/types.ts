@@ -1,8 +1,5 @@
 import { Booking, Listing, ListingType } from "../../../lib/types";
 
-export interface AutoCompleteArgs {
-  text: string;
-}
 
 export enum ListingsFilter {
   PRICE_LOW_TO_HIGH = "PRICE_LOW_TO_HIGH",
@@ -55,3 +52,21 @@ export interface HostListingInput {
 export interface HostListingArgs {
   input: HostListingInput;
 }
+
+
+export interface CityAndAdmin {
+  admin: string;
+  city: string;
+}
+
+export interface CityAndAdminResults {
+  result: CityAndAdmin[];
+  total: number;
+}
+
+export type AutoCompleteResult = ListingsData | CityAndAdminResults
+
+export interface AutoCompleteArgs {
+  text: string;
+}
+

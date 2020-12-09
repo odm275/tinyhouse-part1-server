@@ -15,6 +15,9 @@ import {
   HostListingInput,
   HostListingArgs,
   AutoCompleteArgs,
+  AutoCompleteResult,
+  CityAndAdmin,
+  CityAndAdminResults
 } from "./types";
 
 const verifyHostListingInput = ({
@@ -38,43 +41,73 @@ const verifyHostListingInput = ({
 };
 
 export const listingResolvers: IResolvers = {
+  AutoCompleteResult: {
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    __resolveType: (obj:any) => {
+      if(obj.region) {
+        return "ListingsData"
+      } else {
+        return "CityAndAdminResults"
+      }
+    }
+  },
   Query: {
     autoCompleteOptions: async (
       _root: undefined,
       { text }: AutoCompleteArgs,
       { db }: { db: Database }
-    ): Promise<ListingsData> => {
+    ): Promise<AutoCompleteResult> => {
       try {
+
+        // The normal case
         const data: ListingsData = {
           total: 0,
           result: [],
           region: null,
         };
-        const result = await db.listings.aggregate([
+
+        // WHen we're trying to magically return cities without repeating ourselves.
+        const cityAdminData:CityAndAdminResults = {
+          total: 0,
+          result: []
+        };
+
+
+        const groupCity = await db.listings.aggregate([
           {
             $search: {
-              compound: {
-                should: [
-                  {
-                    autocomplete: {
-                      query: `${text}`,
-                      path: "address",
-                    },
-                  },
-                  {
-                    autocomplete: {
-                      query: `${text}`,
-                      path: "city",
-                    },
-                  },
-                ],
+              autocomplete: {
+                query: `${text}`,
+                path: "city",
               },
             },
           },
+          {
+            $group: {
+              _id: { admin: "$admin", city: "$city" },
+            },
+          },
         ]);
-        const listings = result.limit(5);
-        data.result = await listings.toArray();
+
+        const groupCityResults = await groupCity.toArray();
+        const groupCityResultsLenght = groupCityResults.length
+        if(groupCityResultsLenght > 0){
+          const groupCityFormatResults: CityAndAdmin[] = groupCityResults.map((result:any) => {
+            return { admin:result._id.admin, city: result._id.city }
+          });
+          console.log('come on come on')
+          cityAdminData.result = groupCityFormatResults
+          cityAdminData.total = groupCityResultsLenght;
+          console.log('cityAdminData',cityAdminData)
+
+          return cityAdminData;
+        }
+
+        // Out of this ... I beed unique cities
+
+        // data.result = await listings.toArray();
         data.total = data.result.length;
+
         return data;
       } catch (error) {
         throw new Error(`Failed to search(autocomplete) listings : ${error}`);
